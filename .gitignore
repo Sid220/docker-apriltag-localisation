@@ -3,5 +3,5 @@ install.sh
 venv
 nuke.sh
 calibrate
-!calibrate/dist.npy
-!calibrate/mtx.npy
+!/calibrate/dist.npy
+!/calibrate/mtx.npy
