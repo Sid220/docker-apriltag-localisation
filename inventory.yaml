@@ -1,0 +1,6 @@
+slaves:
+  hosts:
+    worker1:
+      ansible_host: 10.171.135.198
+    worker2:
+      ansible_host: 10.171.135.7

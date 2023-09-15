@@ -1,0 +1,13 @@
+- name: Setup slaves
+  hosts: slaves
+  become: true
+  become_method: sudo
+  tasks:
+   - name: Install dependencies
+     apt:
+       update_cache: true
+       pkg:
+         - python3
+         - python3-pip
+         - docker.io
+       state: latest
