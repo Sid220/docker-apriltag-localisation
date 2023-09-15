@@ -3,16 +3,46 @@
   become: true
   become_method: sudo
   tasks:
+    - name: Check connection to internet
+      uri:
+        url: "https://google.com"
+        return_content: true
+        timeout: 3
+      register: result
+      ignore_errors: true
+    - name: Print connection to internet
+      ansible.builtin.debug:
+        var: result.status
+
     - name: Pull latest image
       docker_image:
         name: sid220/apriltag_localisation:latest
+        source: pull
+      when: result.status == 200
+
+    - name: Make project directory
+      file:
+        path: /home/ubuntu/apriltag
+        state: directory
+
     - name: Pull latest compose file
       get_url:
-        url: https://raw.githubusercontent.com/sid220/docker-apriltag-localisation/master/compose.yaml
+        url: https://raw.githubusercontent.com/Sid220/docker-apriltag-localisation/master/compose.yaml
         dest: /home/ubuntu/apriltag/compose.yaml
+      when: result.status == 200
+
+    - name: Tear down existing services
+      community.docker.docker_compose:
+        project_src: /home/ubuntu/apriltag
+        state: absent
+
     - name: Startup application
       community.docker.docker_compose:
         project_src: /home/ubuntu/apriltag
         project_name: apriltag
+      register: output
+    - name: Show results
+      ansible.builtin.debug:
+        var: output
 
 

@@ -1,7 +1,7 @@
 services:
   server:
-#    build:
-#      context: .
+    build:
+      context: .
     image: sid220/apriltag_localisation:latest
     ports:
       - 8000:8000
