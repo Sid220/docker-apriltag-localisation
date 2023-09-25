@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - shell: bash
-      env:
-        DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
     - uses: actions/checkout@v3
     - name: Login to docker
-      run: docker login --password hi --username "sid220"
+      shell: bash
+      env:
+        DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+      run: docker login --password "$DOCKER_PASS" --username "sid220"
     - name: Create and enter builder
       run: docker buildx create --name apriltag-builder && docker buildx use apriltag-builder
     - name: Build the Docker image
