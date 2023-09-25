@@ -19,7 +19,7 @@ jobs:
         run: |
           git config --global user.email "github+actions@gmail.com"
           git config --global user.name "Actions"
-          git fetch --tags
+          git fetch --tags 
           wget -O - https://raw.githubusercontent.com/Sid220/docker-apriltag-localisation/beta/gitbump.sh | bash
       - name: Login to docker
         shell: bash
