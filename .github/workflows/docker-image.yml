@@ -19,9 +19,10 @@ jobs:
         run: |
           git config --global user.email "github+actions@gmail.com"
           git config --global user.name "Actions"
-          git fetch --tags 
-          export GH_PASS=$GH_PASS
-          wget -O - https://raw.githubusercontent.com/Sid220/docker-apriltag-localisation/beta/gitbump.sh | bash
+          git fetch --tags
+          wget https://raw.githubusercontent.com/Sid220/docker-apriltag-localisation/beta/gitbump.sh
+          chmod +x gitbump.sh
+          bash gitbump.sh $GH_PASS
       - name: Login to docker
         shell: bash
         env:
