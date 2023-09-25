@@ -45,7 +45,7 @@
 
     - name: Startup application
       command:
-        cmd: /usr/local/bin/jinja-compose -d /usr/local/bin/docker-compose
+        cmd: /usr/local/bin/jinja_compose -d /usr/local/bin/docker-compose
         chdir: /lib/apriltag
       register: output
 
