@@ -6,7 +6,7 @@ from src.helpers.circular_buffer import CircularBuffer
 from src.helpers.get_conf import get_redis_info
 from src.helpers.redis_mgr import RedisHandler
 
-redis_info = get_redis_info()
+redis_info = get_redis_info(False)
 redis = redis.Redis(host="localhost", port=redis_info["port"])
 assert redis.ping()
 
