@@ -21,14 +21,15 @@ print(bcolors.HEADER + "AprilTag Localisation Server\n" + bcolors.ENDC + """
 
 # Get if production from env
 production = os.getenv("DAPRILTAG_PRODUCTION") == "1"
-host_id = os.getenv("DAPRILTAG_HID")
+host_id = os.getenv("DAPRILTAG_HID") if os.getenv("DAPRILTAG_HID") is not None else "0"
+is_leader = host_id == "0"
 use_threads = os.getenv("DAPRILTAG_USE_THREADS") == "1"
 running_in_docker = os.getenv("DAPRILTAG_RUNNING_IN_DOCKER") == "1"
 attached_cameras = get_attached_cameras(host_id)
 tag_positions = get_tag_positions()
 camera_matrices = get_camera_matrices(attached_cameras)
 camera_distortion_coefficients = get_camera_distortions(attached_cameras)
-redis_info = get_redis_info()
+redis_info = get_redis_info(is_leader)
 
 if production:
     print("Production mode enabled")
@@ -36,6 +37,7 @@ else:
     print(bcolors.OKBLUE + "Production mode: " + prettify_bool(production))
     cv2.destroyAllWindows()
 print(bcolors.OKBLUE + "Host ID: " + bcolors.ENDC + str(host_id))
+print(bcolors.OKBLUE + "Is leader: " + prettify_bool(is_leader))
 print(bcolors.OKBLUE + "Using threads: " + prettify_bool(use_threads, False))
 print(bcolors.OKBLUE + "Running in docker: " + prettify_bool(running_in_docker))
 print(bcolors.OKBLUE + "Redis enabled: " + prettify_bool(redis_info["enabled"]))

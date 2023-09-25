@@ -52,10 +52,12 @@ def get_tag_positions():
             raise Exception("Couldn't load apriltag info")
 
 
-def get_redis_info():
+def get_redis_info(is_leader):
     with open("conf/redis-info.yml", "r") as stream:
         try:
             redis_info = yaml.safe_load(stream)
+            if is_leader:
+                redis_info["host"] = "redis"
             return redis_info
         except yaml.YAMLError as exc:
             print(exc)

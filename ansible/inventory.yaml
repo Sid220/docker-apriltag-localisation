@@ -5,3 +5,8 @@ slaves:
       ansible_user: orangepi
       ansible_ssh_pass: orangepi
       ansible_become_pass: orangepi
+    localost:
+      ansible_host: localhost
+      ansible_user: sid
+      ansible_ssh_pass: YELow*1257
+      ansible_become_pass: YELow*1257
