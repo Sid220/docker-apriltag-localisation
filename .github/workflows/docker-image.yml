@@ -11,13 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Login to docker
-      shell: bash
-      env:
-        DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
-      run: docker login --password "$DOCKER_PASS" --username "sid220"
-    - name: Create and enter builder
-      run: docker buildx create --name apriltag-builder && docker buildx use apriltag-builder
-    - name: Build the Docker image
-      run: docker buildx build --platform linux/amd64,linux/arm64 -t sid220/apriltag_localisation:latest -t sid220/apriltag_localisation:$(date +%s) --push .
+      - uses: actions/checkout@v3
+      - name: Bump version
+        run: |
+          git config --global user.email "github+actions@gmail.com"
+          git config --global user.name "Actions"
+          git fetch --tags
+          wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
+      - name: Login to docker
+        shell: bash
+        env:
+          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+        run: docker login --password "$DOCKER_PASS" --username "sid220"
+      - name: Create and enter builder
+        run: docker buildx create --name apriltag-builder && docker buildx use apriltag-builder
+      - name: Build the Docker image
+        run: docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t sid220/apriltag_localisation:latest -t sid220/apriltag_localisation:$(git tag --sort=-v:refname --list "v[0-9]*" | head -n 1 | cut -c 2-) --push .

@@ -1,3 +1,5 @@
+import time
+
 import redis
 import numpy as np
 import cv2
@@ -7,18 +9,26 @@ from src.helpers.get_conf import get_redis_info
 from src.helpers.redis_mgr import RedisHandler
 
 redis_info = get_redis_info(False)
-redis = redis.Redis(host="localhost", port=redis_info["port"])
-assert redis.ping()
+not_connected = True
+while not_connected:
+    try:
+        redis_client = redis.Redis(host="localhost", port=redis_info["port"])
+        assert redis_client.ping()
+        not_connected = False
+    except (redis.exceptions.ConnectionError, AssertionError):
+        print("Waiting for Redis")
+        time.sleep(2)
+        continue
 
 buffer = CircularBuffer(10)
 
-l = redis.xread({"tvecs_stream": "$"}, block=0)
+l = redis_client.xread({"tvecs_stream": "$"}, block=0)
 while True:
     print("New Loop")
     print(l)
 
     last_id_returned = l[0][1][-1][0]
-    l = redis.xread({"tvecs_stream": last_id_returned}, count=10, block=0)
+    l = redis_client.xread({"tvecs_stream": last_id_returned}, count=10, block=0)
     print(l)
 
     translation_vectors = RedisHandler.arr_from_redis(l[0][1][0][1][b'tvecs'])
