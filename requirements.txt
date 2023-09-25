@@ -1,3 +1,5 @@
 opencv-python
 numpy
 pyyaml
+redis[hiredis]
+jinja-compose-wrapper

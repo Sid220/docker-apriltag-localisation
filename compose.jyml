@@ -5,7 +5,7 @@ services:
     image: sid220/apriltag_localisation:latest
     environment:
       - DAPRILTAG_PRODUCTION=1
-      - DAPRILTAG_HID=0
+      - DAPRILTAG_HID={{ HostMethods.get_host_id() }}
       - OPENCV_VIDEOIO_DEBUG=1
     device_cgroup_rules:
       - 'c *:* rmw'
@@ -20,17 +20,18 @@ services:
     #    restart: always
     networks:
       - apriltag
-    
+    {% if HostMethods.is_leader() %}
     depends_on:
       - redis
-    
-  
+    {% endif %}
+  {% if HostMethods.is_leader() %}
   redis:
     image: redis:latest
     ports:
       - 6379:6379
     networks:
       - apriltag
-  
+  {% endif %}
 networks:
   apriltag:
+

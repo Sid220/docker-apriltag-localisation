@@ -14,6 +14,8 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # the application crashes without emitting any logs due to buffering.
 ENV PYTHONUNBUFFERED=1
 
+ENV DAPRILTAG_RUNNING_IN_DOCKER=1
+
 WORKDIR ./
 
 # Create a non-privileged user that the app will run under.
@@ -51,4 +53,4 @@ COPY . .
 EXPOSE 8000
 
 # Run the application.
-CMD python3 main.py
+CMD python3 src/main.py
