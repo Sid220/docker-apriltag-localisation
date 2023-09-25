@@ -21,8 +21,7 @@ print(bcolors.HEADER + "AprilTag Localisation Server\n" + bcolors.ENDC + """
 
 # Get if production from env
 production = os.getenv("DAPRILTAG_PRODUCTION") == "1"
-# host_id = os.getenv("DAPRILTAG_HOST_ID")
-host_id = 0
+host_id = os.getenv("DAPRILTAG_HID")
 use_threads = os.getenv("DAPRILTAG_USE_THREADS") == "1"
 running_in_docker = os.getenv("DAPRILTAG_RUNNING_IN_DOCKER") == "1"
 attached_cameras = get_attached_cameras(host_id)

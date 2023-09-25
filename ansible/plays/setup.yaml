@@ -1,3 +1,23 @@
+- name: Setup slaves
+  hosts: slaves
+  become: true
+  become_method: sudo
+  tasks:
+    - name: Remove docker anti-dependencies
+      apt:
+        update_cache: true
+        pkg:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: absent
+    - name: Install dependencies
+      apt:
+        pkg:
+          - python3
+          - python3-pip
+          - docker.io
+        state: latest
 - name: Install docker requirements
   hosts: all
   become: true
@@ -8,23 +28,10 @@
         name:
           - docker
           - docker-compose
+          - jinja-compose-wrapper
     - name: Install apt dependencies
       apt:
         update_cache: true
         pkg:
           - python3-docker
-        state: latest
-
-- name: Setup slaves
-  hosts: slaves
-  become: true
-  become_method: sudo
-  tasks:
-    - name: Install dependencies
-      apt:
-        update_cache: true
-        pkg:
-          - python3
-          - python3-pip
-          - docker.io
         state: latest

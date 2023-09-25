@@ -22,25 +22,32 @@
 
     - name: Make project directory
       file:
-        path: /home/ubuntu/apriltag
+        path: /lib/apriltag
         state: directory
 
-    - name: Pull latest compose file
+    - name: Pull latest jcompose file
       get_url:
-        url: https://raw.githubusercontent.com/Sid220/docker-apriltag-localisation/master/compose.yaml
-        dest: /home/ubuntu/apriltag/compose.yaml
+        url: https://raw.githubusercontent.com/Sid220/docker-apriltag-localisation/master/compose.jyml
+        dest: /lib/apriltag/compose.jyml
+      when: result.status == 200
+
+    - name: Pull latest pycompose file
+      get_url:
+        url: https://raw.githubusercontent.com/Sid220/docker-apriltag-localisation/master/compose.py
+        dest: /lib/apriltag/compose.py
       when: result.status == 200
 
     - name: Tear down existing services
       community.docker.docker_compose:
-        project_src: /home/ubuntu/apriltag
+        project_src: /lib/apriltag
         state: absent
 
     - name: Startup application
-      community.docker.docker_compose:
-        project_src: /home/ubuntu/apriltag
-        project_name: apriltag
+      command:
+        cmd: /usr/local/bin/jinja-compose -d /usr/local/bin/docker-compose
+        chdir: /lib/apriltag
       register: output
+
     - name: Show results
       ansible.builtin.debug:
         var: output
