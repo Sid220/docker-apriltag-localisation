@@ -1,0 +1,9 @@
+- name: Stop slaves
+  hosts: slaves
+  become: true
+  become_method: sudo
+  tasks:
+    - name: Tear down existing services
+      community.docker.docker_compose:
+        project_src: /lib/apriltag
+        state: absent
