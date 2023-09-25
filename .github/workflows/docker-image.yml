@@ -22,4 +22,4 @@ jobs:
     - name: Create and enter builder
       run: docker buildx create --name apriltag-builder && docker buildx use apriltag-builder
     - name: Build the Docker image
-      run: docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7 -t sid220/apriltag_localisation:latest -t sid220/apriltag_localisation:$(date +%s) --push .
+      run: docker buildx build --platform linux/amd64,linux/arm64 -t sid220/apriltag_localisation:latest -t sid220/apriltag_localisation:$(date +%s) --push .
