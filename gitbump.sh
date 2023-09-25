@@ -18,5 +18,7 @@ fi
 newv=$(docker run --rm -v "$PWD":/app treeder/bump --input "$oldv" patch)
 echo "newv: $newv"
 
+echo "Creating tag..."
 git tag -a "v$newv" -m "version $newv"
+echo "Pushing tag to github..."
 git push --follow-tags "https://sid220:$GH_PASS@github.com/Sid220/docker-apriltag-localisation.git"
