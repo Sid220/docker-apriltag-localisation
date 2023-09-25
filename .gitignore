@@ -5,3 +5,4 @@ nuke.sh
 calibrate
 !/calibrate/dist.npy
 !/calibrate/mtx.npy
+compose.yaml

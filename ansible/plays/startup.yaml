@@ -41,6 +41,7 @@
       community.docker.docker_compose:
         project_src: /lib/apriltag
         state: absent
+      ignore_errors: true
 
     - name: Startup application
       command:
