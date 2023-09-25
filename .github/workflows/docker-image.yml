@@ -13,11 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Bump version
+        shell: bash
+        env:
+          GH_PASS: ${{ secrets.GH_PASS }}
         run: |
           git config --global user.email "github+actions@gmail.com"
           git config --global user.name "Actions"
           git fetch --tags
-          wget -O - https://raw.githubusercontent.com/treeder/bump/master/gitbump.sh | bash
+          wget -O - https://raw.githubusercontent.com/Sid220/docker-apriltag-localisation/beta/gitbump.sh | bash
       - name: Login to docker
         shell: bash
         env:
