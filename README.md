@@ -3,3 +3,4 @@
 
 Large-scale apriltag localisation for edge devices.
 
+See full demo [here](https://ftp.plios.tech/Docker%20AprilTag%20Localisation/AprilTagLocalisation.mp4).
