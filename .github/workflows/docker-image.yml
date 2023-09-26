@@ -18,7 +18,7 @@ jobs:
           GH_PASS: ${{ secrets.GH_PASS }}
         run: |
           git config --global user.email "github+actions@gmail.com"
-          git config --global user.name "Actions"
+          git config --global user.name "sid220"
           git fetch --tags
           wget https://raw.githubusercontent.com/Sid220/docker-apriltag-localisation/beta/gitbump.sh
           chmod +x gitbump.sh
