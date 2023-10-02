@@ -116,9 +116,17 @@ def perform_localisation(img, mtx, dist, camera="unknown"):
             # https://github.com/Mechanical-Advantage/AdvantageKit/blob/ns-dev/akit/py/northstar/pipeline/CameraPoseEstimator.py#L98
             # field_to_camera_0 = field_to_tag_pose.transformBy(camera_to_tag_0.inverse())
             # field_to_camera_1 = field_to_tag_pose.transformBy(camera_to_tag_1.inverse())
-            # camera_to_tag_0 = np.dot(tvecs[0], cv2.Rodrigues(rvecs[0])[0])
+
+            camera_t_tag_0_R = cv2.Rodrigues(rvecs[0])[0]
+            camera_to_tag_0_trans = np.dot(camera_t_tag_0_R, tvecs[0])
+            camera_t_tag_0_pose = np.vstack([np.hstack([camera_t_tag_0_R, camera_to_tag_0_trans]),
+                                             [0, 0, 0, 1]])
+            # print(camera_t_tag_0_pose)
+
             # camera_to_tag_1 = np.dot(rvecs[1], cv2.Rodrigues(rvecs[1])[0])
-            # field_to_camera_translation_0 = np.dot(get_objp(ids[0][0]), np.linalg.inv(camera_to_tag_0))
+            field_to_camera_translation_0 = np.dot(np.linalg.inv(camera_t_tag_0_pose), get_objp(ids[0][0]))
+
+            print(field_to_camera_translation_0)
             # field_to_camera_rotation_0 = np.dot(get_objp(ids[0][0]), np.linalg.inv(rvecs[0]))
             # field_to_camera_translation_1 = np.dot(get_objp(ids[0][0]), np.linalg.inv(camera_to_tag_1))
             # field_to_camera_rotation_1 = np.dot(get_objp(ids[0][0]), np.linalg.inv(rvecs[1]))
@@ -126,7 +134,7 @@ def perform_localisation(img, mtx, dist, camera="unknown"):
             translation_vectors.append(tvecs[0])
             translation_vectors.append(tvecs[1])
 
-        except Exception as e:
+        except SyntaxError as e:
             # TODO: Handle this better
             print("Error in solvingPnP (one tag): " + str(e))
             return
@@ -166,10 +174,15 @@ def perform_localisation(img, mtx, dist, camera="unknown"):
             # camera_to_field = Transform3d(camera_to_field_pose.translation(), camera_to_field_pose.rotation())
             # field_to_camera = camera_to_field.inverse()
             # field_to_camera_pose = Pose3d(field_to_camera.translation(), field_to_camera.rotation())
-            # field_to_camera_translation = np.linalg.inv(tvecs[0])
+            camera_t_tag_0_R = cv2.Rodrigues(rvecs[0])[0]
+            camera_to_tag_0_trans = np.dot(camera_t_tag_0_R, tvecs[0])
+            camera_t_tag_0_pose = np.vstack([np.hstack([camera_t_tag_0_R, camera_to_tag_0_trans]),
+                                             [0, 0, 0, 1]])
+            field_to_camera_translation = np.linalg.inv(camera_t_tag_0_pose)
+            print(field_to_camera_translation)
 
             translation_vectors.append(tvecs[0])
-        except Exception as e:
+        except SyntaxError as e:
             # TODO: Handle this better
             print("Error in solvingPnP (multitag): " + str(e))
             return
