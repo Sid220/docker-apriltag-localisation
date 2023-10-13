@@ -121,18 +121,16 @@ def perform_localisation(img, mtx, dist, camera="unknown"):
             camera_to_tag_0_trans = np.dot(camera_t_tag_0_R, tvecs[0])
             camera_t_tag_0_pose = np.vstack([np.hstack([camera_t_tag_0_R, camera_to_tag_0_trans]),
                                              [0, 0, 0, 1]])
-            # print(camera_t_tag_0_pose)
+            camera_t_tag_1_R = cv2.Rodrigues(rvecs[1])[0]
+            camera_to_tag_1_trans = np.dot(camera_t_tag_1_R, tvecs[1])
+            camera_t_tag_1_pose = np.vstack([np.hstack([camera_t_tag_1_R, camera_to_tag_1_trans]),
+                                             [0, 0, 0, 1]])
 
-            # camera_to_tag_1 = np.dot(rvecs[1], cv2.Rodrigues(rvecs[1])[0])
             field_to_camera_translation_0 = np.dot(np.linalg.inv(camera_t_tag_0_pose), get_objp(ids[0][0]))
+            field_to_camera_translation_1 = np.dot(np.linalg.inv(camera_t_tag_1_pose), get_objp(ids[0][0]))
 
-            print(field_to_camera_translation_0)
-            # field_to_camera_rotation_0 = np.dot(get_objp(ids[0][0]), np.linalg.inv(rvecs[0]))
-            # field_to_camera_translation_1 = np.dot(get_objp(ids[0][0]), np.linalg.inv(camera_to_tag_1))
-            # field_to_camera_rotation_1 = np.dot(get_objp(ids[0][0]), np.linalg.inv(rvecs[1]))
-
-            translation_vectors.append(tvecs[0])
-            translation_vectors.append(tvecs[1])
+            translation_vectors.append(field_to_camera_translation_0[0].transpose())
+            translation_vectors.append(field_to_camera_translation_1[0].transpose())
 
         except SyntaxError as e:
             # TODO: Handle this better
@@ -150,18 +148,7 @@ def perform_localisation(img, mtx, dist, camera="unknown"):
         #
         #         translation_vectors.append(tvec)
         object_points = []
-        fake_object_points = []
         for tag_id in ids:
-            fid_width = tag_positions[tag_id[0]]["size"]["width"]
-            fid_height = tag_positions[tag_id[0]]["size"]["height"]
-            base_obj_points = np.array([[-fid_width / 2.0, fid_height / 2.0, 0.0],
-                                        [fid_width / 2.0, fid_height / 2.0, 0.0],
-                                        [fid_width / 2.0, -fid_height / 2.0, 0.0],
-                                        [-fid_width / 2.0, -fid_height / 2.0, 0.0]])
-            fake_object_points += [[-fid_width / 2.0, fid_height / 2.0, 0.0],
-                                   [fid_width / 2.0, fid_height / 2.0, 0.0],
-                                   [fid_width / 2.0, -fid_height / 2.0, 0.0],
-                                   [-fid_width / 2.0, -fid_height / 2.0, 0.0]]
             object_points += (get_objp(tag_id[0])[0]).tolist()
         try:
             _, rvecs, tvecs, errors = cv2.solvePnPGeneric(np.array(object_points).astype("float32"),
@@ -174,14 +161,14 @@ def perform_localisation(img, mtx, dist, camera="unknown"):
             # camera_to_field = Transform3d(camera_to_field_pose.translation(), camera_to_field_pose.rotation())
             # field_to_camera = camera_to_field.inverse()
             # field_to_camera_pose = Pose3d(field_to_camera.translation(), field_to_camera.rotation())
-            camera_t_tag_0_R = cv2.Rodrigues(rvecs[0])[0]
-            camera_to_tag_0_trans = np.dot(camera_t_tag_0_R, tvecs[0])
-            camera_t_tag_0_pose = np.vstack([np.hstack([camera_t_tag_0_R, camera_to_tag_0_trans]),
+            camera_t_field_R = cv2.Rodrigues(rvecs[0])[0]
+            camera_t_field_trans = np.dot(camera_t_field_R, tvecs[0])
+            camera_t_field_pose = np.vstack([np.hstack([camera_t_field_R, camera_t_field_trans]),
                                              [0, 0, 0, 1]])
-            field_to_camera_translation = np.linalg.inv(camera_t_tag_0_pose)
-            print(field_to_camera_translation)
+            field_to_camera_translation = np.linalg.inv(camera_t_field_pose)
 
-            translation_vectors.append(tvecs[0])
+            new_tvec = np.expand_dims(field_to_camera_translation[0:3, 3].transpose(), 1)
+            translation_vectors.append(new_tvec)
         except SyntaxError as e:
             # TODO: Handle this better
             print("Error in solvingPnP (multitag): " + str(e))
