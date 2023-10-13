@@ -3,6 +3,6 @@
 
 Large-scale apriltag localisation for edge devices.
 
-![demo](https://ftp.plios.tech/Docker%20AprilTag%20Localisation/AprilTagLocalisationXS.GIF)
+<img src="https://github.com/Sid220/cdn/blob/main/docker-apriltag-localisation/AprilTagLocalisationXS.gif">
 
 See full demo [here](https://ftp.plios.tech/Docker%20AprilTag%20Localisation/AprilTagLocalisation.mp4).
